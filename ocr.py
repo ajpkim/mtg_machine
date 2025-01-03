@@ -54,10 +54,14 @@ if __name__ == "__main__":
     (IMG_DEBUG_DIR / "gray").mkdir(parents=True, exist_ok=True)
     (IMG_DEBUG_DIR / "binary").mkdir(parents=True, exist_ok=True)
 
-    image_name = "ltr-95-mirkwood-bats.jpg"
-    image_name = "ltr-303-faramir-field-commander.jpg"
-    # image_name = "ltr-203-flame-of-anor.jpg"
-    # image_name = "ltr-328-saruman-of-many-colors.jpg"
+    image_name = "scryfall/ltr-95-mirkwood-bats.jpg"
+    image_name = "scryfall/ltr-303-faramir-field-commander.jpg"
+    image_name = "scryfall/ltr-203-flame-of-anor.jpg"
+    image_name = "scryfall/ltr-328-saruman-of-many-colors.jpg"
+
+    image_name = "wild/mines_of_moria.jpg"
+    image_name = "wild/swamp.jpg"
+
     image_path = IMAGE_DIR / image_name
     image = cv2.imread(image_path)
 
