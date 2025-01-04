@@ -1,3 +1,5 @@
+import argparse
+
 from typing import Optional
 
 import re
@@ -8,7 +10,8 @@ import pytesseract
 from pytesseract import Output
 
 
-def preprocess_image(image, img_debug_dir: Optional[Path] = None):
+def preprocess_image(image_path, img_debug_dir: Optional[Path] = None):
+    image = cv2.imread(image_path)
     # Scaling
     height, width = image.shape[:2]
     scale_factor = 2 if min(height, width) < 1000 else 1
@@ -19,8 +22,8 @@ def preprocess_image(image, img_debug_dir: Optional[Path] = None):
     _, binary = cv2.threshold(gray, 150, 255, cv2.THRESH_BINARY)
 
     if img_debug_dir:
-        cv2.imwrite(img_debug_dir / f"gray/{image_name}", gray)
-        cv2.imwrite(img_debug_dir / f"binary/{image_name}", binary)
+        cv2.imwrite(img_debug_dir / f"gray/{image_path.name}", gray)
+        cv2.imwrite(img_debug_dir / f"binary/{image_path.name}", binary)
 
     return binary
 
@@ -47,25 +50,18 @@ def extract_set_abbr(ocr_result):
 
 
 if __name__ == "__main__":
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--image", required=True, help="Path to the input image")
+    args = parser.parse_args()
 
-    IMAGE_DIR = Path("data/images")
-    IMG_DEBUG_DIR = IMAGE_DIR / "debug"
     # Ensure that debug dirs exist
-    (IMG_DEBUG_DIR / "gray").mkdir(parents=True, exist_ok=True)
-    (IMG_DEBUG_DIR / "binary").mkdir(parents=True, exist_ok=True)
+    IMAGE_DEBUG_DIR = Path("data/images/debug")
+    (IMAGE_DEBUG_DIR / "gray").mkdir(parents=True, exist_ok=True)
+    (IMAGE_DEBUG_DIR / "binary").mkdir(parents=True, exist_ok=True)
 
-    image_name = "scryfall/ltr-95-mirkwood-bats.jpg"
-    image_name = "scryfall/ltr-303-faramir-field-commander.jpg"
-    image_name = "scryfall/ltr-203-flame-of-anor.jpg"
-    image_name = "scryfall/ltr-328-saruman-of-many-colors.jpg"
+    image_path = Path(args.image)
 
-    image_name = "wild/mines_of_moria.jpg"
-    image_name = "wild/swamp.jpg"
-
-    image_path = IMAGE_DIR / image_name
-    image = cv2.imread(image_path)
-
-    img = preprocess_image(image, IMG_DEBUG_DIR)
+    img = preprocess_image(image_path, IMAGE_DEBUG_DIR)
     ocr_result = run_ocr(img)
     collector_num = extract_collector_number(ocr_result)
     set_abbr = extract_set_abbr(ocr_result)
