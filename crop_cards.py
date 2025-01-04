@@ -103,7 +103,7 @@ if __name__ == "__main__":
     # Paths
     model_path = "yolov8m-seg.pt"
     input_dir = "data/images/wild/"
-    cropped_output_dir = "data/images/cropped/"
+    cropped_output_dir = "data/images/cropped-cards/"
     annotated_output_dir = "data/images/annotated"
 
     # Load YOLO model
